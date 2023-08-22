@@ -1,0 +1,7 @@
+gTTS
+pydub
+openai==0.27.8
+speechrecognition
+pyaudio
+datetime
+python-dotenv
