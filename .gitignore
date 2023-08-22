@@ -1,0 +1,4 @@
+*.log
+*.mp3
+.env
+test.py
