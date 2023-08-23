@@ -10,7 +10,7 @@ Step 1. 
 Clone the repo and cd into it
 
 ```
-git clone https://github.com/Mika-Project/mika-assisstant.git && cd voice-assistant
+git clone https://github.com/Mika-Project/mika-assisstant.git && cd mika-assistant
 ```
 
 Step 2.  
@@ -42,7 +42,7 @@ Step 2.
 CD and glone the github repo. (You can also download from the releases tab.)
 
 ```
-git clone https://github.com/Mika-Project/mika-assisstant.git ; cd voice-assistant
+git clone https://github.com/Mika-Project/mika-assisstant.git ; cd mika-assistant
 ```
 
 Step 3.
