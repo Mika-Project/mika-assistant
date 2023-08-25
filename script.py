@@ -168,7 +168,7 @@ def chat_with_user():
     # Initialize the recognizer
     r = sr.Recognizer()
 
-    # Install depencies for python. it will costs us around 0.6 secounds
+    # Install depencies for python. it will costs us around 0.6 seconds
     install_dependencies()
 
     while True:
