@@ -145,14 +145,19 @@ def install_depedencies():
 
     if os.name == 'posix':
         depedencies_script='install-requirements.sh'
+        try:
+            subprocess.run(['sh', depedencies_script], check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Error executing the script: {e}")
 
     elif os.name == 'nt':
-        depedencies_script='install-requirements.bat'
-
-    try:
-        subprocess.run(['python', depedencies_script], check=True)
-    except subprocess.CalledProcessError as e:
-        print(f"Error executing the script: {e}")
+        depedencies_script='.\install-requirements.bat'
+        try:
+            subprocess.run([depedencies_script], check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Error executing the script: {e}")
+    else:
+        print("Your OS is not found")
 
 
 #########################
