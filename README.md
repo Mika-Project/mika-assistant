@@ -18,6 +18,7 @@ Step 2.
 Run the shell script, this will download all the required packages.
 
 ```bash
+chmod +x install-requirements.sh 
 sh install-requirements.sh
 ```
 
