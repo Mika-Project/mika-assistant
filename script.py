@@ -138,6 +138,21 @@ def answers(user_input):
         return response
 
 
+######################################
+# Install requirements automatically #
+######################################
+def install_depedencies():
+
+    if os.name == 'posix':
+        depedencies_script='install-requirements.sh'
+
+    elif os.name == 'nt':
+        depedencies_script='install-requirements.bat'
+
+    try:
+        subprocess.run(['python', depedencies_script], check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error executing the script: {e}")
 
 
 #########################
@@ -147,6 +162,9 @@ def answers(user_input):
 def chat_with_user():
     # Initialize the recognizer
     r = sr.Recognizer()
+
+    # Install depencies for python. it will costs us around 0.6 secounds
+    install_dependencies()
 
     while True:
         with sr.Microphone() as source:
