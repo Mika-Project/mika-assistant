@@ -9,14 +9,15 @@ For the installation on linux you can run the shell script to install python, pi
 Step 1.   
 Clone the repo and cd into it
 
-```
-git clone https://github.com/Mika-Project/mika-assisstant.git && cd mika-assistant
+```bash
+git clone https://github.com/Mika-Project/mika-assisstant.git 
+cd mika-assistant
 ```
 
 Step 2.  
 Run the shell script, this will download all the required packages.
 
-```
+```bash
 sh install-requirements.sh
 ```
 
@@ -25,7 +26,7 @@ NOTE: This script works on Arch and Debian based distros! (For other distros you
 Step 3.  
 Run the Python script.
 
-```
+```bash
 python3 script.py
 ```
 
@@ -41,7 +42,7 @@ Make sure to install python and pip from the [official website,](https://www.pyt
 Step 2.  
 CD and glone the github repo. (You can also download from the releases tab.)
 
-```
+```bash
 git clone https://github.com/Mika-Project/mika-assisstant.git ; cd mika-assistant
 ```
 
@@ -49,14 +50,14 @@ Step 3.
 
 Download the required pip packages.
 
-```
+```bash
 pip install -r requirements.txt
 ```
 
 Step 4.  
 Run the Python script.
 
-```
+```bash
 python3 script.py
 ```
 
