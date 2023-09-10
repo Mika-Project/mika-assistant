@@ -13,7 +13,6 @@ import os
 # Load environment variables #
 ##############################
 
-
 load_dotenv()
 
 ###################################
@@ -28,8 +27,6 @@ def text_to_speech(text, language='en'):
     # Remove the temporary audio file
     os.remove('output.mp3')
 
-
-
 def ttsJustText(text, language='en'):
     tts = gTTS(text=text, lang=language, tld='com.au', slow=False, lang_check=False)
     tts.save('output2.mp3')
@@ -37,7 +34,6 @@ def ttsJustText(text, language='en'):
     play(audio)
     # Remove the temporary audio file
     os.remove('output2.mp3')
-
 
 #############################
 # GET RESPONSE FROM CHATGPT #
@@ -61,7 +57,6 @@ def chatgpt(prompt):
     # response = response.choices[0].text
     response = response.choices[0].text.strip()
     return response  # Return the generated response
-
 
 ######################
 # ANIME PLAY COMMAND #
@@ -131,14 +126,10 @@ def answers(user_input):
         print(f"Watching anime: {anime_name}")
         run_ani_cli(f"ani-cli {anime_name}")
 
-
     else:
         # Get a response from ChatGPT
         response = chatgpt(full_text)
         return response
-
-
-
 
 #########################
 # LISTER FOR USER INPUT #
