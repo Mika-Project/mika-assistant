@@ -41,7 +41,7 @@ def ttsJustText(text, language='en'):
 # GET RESPONSE FROM CHATGPT #
 #############################
 
-openai.api_key = 'sk-' + str(os.getenv('OPENAI_API_KEY'))
+openai.api_key = str(os.getenv('OPENAI_API_KEY'))
 
 def chatgpt(prompt):
     start_sequence = "\nA:"
@@ -142,7 +142,7 @@ def recognize(recognizer, audio):
     return recognizer.recognize_google(audio);
 
 def interpret(recognizer, audio):
-print('A voice was heard, recognizing...');
+    print('A voice was heard, recognizing...');
     try:
         user_text = recognize(recognizer, audio);
         print("User said:", user_text);
