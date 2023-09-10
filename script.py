@@ -8,6 +8,8 @@ import webbrowser
 import subprocess
 from dotenv import load_dotenv
 import os
+import threading
+import time
 
 ##############################
 # Load environment variables #
@@ -136,50 +138,46 @@ def answers(user_input):
 #########################
 
 def recognize(recognizer, audio):
+    # fast, accurate, requires internet, not free
     return recognizer.recognize_google(audio);
 
+def interpret(recognizer, audio):
+    try:
+        user_text = recognize(recognizer, audio);
+        print("User said:", user_text);
+            
+        # Generate assistant's response
+        assistant_response = answers(user_text)
+
+        # Convert assistant's response to speech
+        text_to_speech(assistant_response)
+    except Exception as e: 
+        print(e);
+
+def callback(recognizer, audio):
+    print('A voice was heard, recognizing...');
+    threading.Thread(target=interpret, args=(recognizer, audio)).start();
+
+def get_microphone():
+    # return default microphone
+    return sr.Microphone();
+    
 def chat_with_user():
     # Initialize the recognizer
-    r = sr.Recognizer()
+    
+    r = sr.Recognizer();
+    m = get_microphone();
+    
+    print("Adjusting microphone levels, please be silent");
+    with m as source:
+        r.adjust_for_ambient_noise(source);
 
-    while True:
-        with sr.Microphone() as source:
-            print("[STATUS] - Adjusting for ambient noise level.")
-            r.adjust_for_ambient_noise(source)
-
-            print("[STATUS] - Listening...")
-            audio = r.listen(source)  # Increase the timeout as needed
-
-            try:
-                speech_text = recognize(r, audio);
-                print("Recognized:", speech_text)
-
-                if "mika" in speech_text.lower():
-                    print("Assistant activated.")
-
-                    try:
-                        print("Listening to user...")
-                        user_audio = r.listen(source, timeout=5)
-                        user_text = recognize(r, user_audio);
-                        print("User said:", user_text)
-
-                        # Generate assistant's response
-                        assistant_response = answers(user_text)
-
-                        # Convert assistant's response to speech
-                        text_to_speech(assistant_response)
-
-                    except sr.WaitTimeoutError:
-                        print("No speech detected.")
-
-                    except sr.UnknownValueError:
-                        print("[ERROR] - Unable to recognize user speech.")
-
-            except sr.WaitTimeoutError:
-                print("No speech detected within timeout.")
-
-            except sr.UnknownValueError:
-                print("[ERROR] - Unable to recognize speech.")
-
+    print("Listening...");
+    stop_listening = r.listen_in_background(m, callback);
+    # stop_listening is a function, call it to stop
+    
+    while True: 
+        time.sleep(1.0);
+    
 # Start the conversation loop
 chat_with_user()
