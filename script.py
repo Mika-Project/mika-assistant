@@ -39,7 +39,7 @@ def ttsJustText(text, language='en'):
 # GET RESPONSE FROM CHATGPT #
 #############################
 
-openai.api_key = 'sk-' + os.getenv('OPENAI_API_KEY')
+openai.api_key = 'sk-' + str(os.getenv('OPENAI_API_KEY'));
 
 def chatgpt(prompt):
     start_sequence = "\nA:"
