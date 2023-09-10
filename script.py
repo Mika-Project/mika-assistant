@@ -135,6 +135,9 @@ def answers(user_input):
 # LISTER FOR USER INPUT #
 #########################
 
+def recognize(recognizer, audio):
+    return recognizer.recognize_google(audio);
+
 def chat_with_user():
     # Initialize the recognizer
     r = sr.Recognizer()
@@ -148,7 +151,7 @@ def chat_with_user():
             audio = r.listen(source)  # Increase the timeout as needed
 
             try:
-                speech_text = r.recognize_google(audio)
+                speech_text = recognize(r, audio);
                 print("Recognized:", speech_text)
 
                 if "mika" in speech_text.lower():
@@ -157,7 +160,7 @@ def chat_with_user():
                     try:
                         print("Listening to user...")
                         user_audio = r.listen(source, timeout=5)
-                        user_text = r.recognize_google(user_audio)
+                        user_text = recognize(r, user_audio);
                         print("User said:", user_text)
 
                         # Generate assistant's response
