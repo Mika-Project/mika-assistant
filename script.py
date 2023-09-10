@@ -136,7 +136,15 @@ def answers(user_input):
 #########################
 
 def recognize(recognizer, audio):
-    return recognizer.recognize_google(audio);
+    # speed is pc dependent, decent, offline, free
+    return recognizer.recognize_whisper(
+        audio,      # audio_data
+        'small.en', # model can be any of tiny, base, small, medium, large, tiny.en, base.en, small.en, medium.en
+        False,      # show_dict
+        None,       # load_options
+        "english",  # language
+        False       # translate
+    );
 
 def chat_with_user():
     # Initialize the recognizer
