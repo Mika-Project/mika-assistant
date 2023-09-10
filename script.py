@@ -41,7 +41,7 @@ def ttsJustText(text, language='en'):
 # GET RESPONSE FROM CHATGPT #
 #############################
 
-openai.api_key = 'sk-' + os.getenv('OPENAI_API_KEY')
+openai.api_key = 'sk-' + str(os.getenv('OPENAI_API_KEY'))
 
 def chatgpt(prompt):
     start_sequence = "\nA:"
@@ -142,6 +142,7 @@ def recognize(recognizer, audio):
     return recognizer.recognize_google(audio);
 
 def interpret(recognizer, audio):
+print('A voice was heard, recognizing...');
     try:
         user_text = recognize(recognizer, audio);
         print("User said:", user_text);
@@ -153,10 +154,6 @@ def interpret(recognizer, audio):
         text_to_speech(assistant_response)
     except Exception as e: 
         print(e);
-
-def callback(recognizer, audio):
-    print('A voice was heard, recognizing...');
-    threading.Thread(target=interpret, args=(recognizer, audio)).start();
 
 def get_microphone():
     # return default microphone
@@ -173,7 +170,7 @@ def chat_with_user():
         r.adjust_for_ambient_noise(source);
 
     print("Listening...");
-    stop_listening = r.listen_in_background(m, callback);
+    stop_listening = r.listen_in_background(m, interpret);
     # stop_listening is a function, call it to stop
     
     while True: 
