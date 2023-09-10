@@ -13,7 +13,6 @@ import os
 # Load environment variables #
 ##############################
 
-
 load_dotenv()
 
 ###################################
@@ -28,8 +27,6 @@ def text_to_speech(text, language='en'):
     # Remove the temporary audio file
     os.remove('output.mp3')
 
-
-
 def ttsJustText(text, language='en'):
     tts = gTTS(text=text, lang=language, tld='com.au', slow=False, lang_check=False)
     tts.save('output2.mp3')
@@ -38,12 +35,11 @@ def ttsJustText(text, language='en'):
     # Remove the temporary audio file
     os.remove('output2.mp3')
 
-
 #############################
 # GET RESPONSE FROM CHATGPT #
 #############################
 
-openai.api_key = 'sk-' + os.getenv('OPENAI_API_KEY')
+openai.api_key = 'sk-' + str(os.getenv('OPENAI_API_KEY'));
 
 def chatgpt(prompt):
     start_sequence = "\nA:"
@@ -61,7 +57,6 @@ def chatgpt(prompt):
     # response = response.choices[0].text
     response = response.choices[0].text.strip()
     return response  # Return the generated response
-
 
 ######################
 # ANIME PLAY COMMAND #
@@ -131,18 +126,17 @@ def answers(user_input):
         print(f"Watching anime: {anime_name}")
         run_ani_cli(f"ani-cli {anime_name}")
 
-
     else:
         # Get a response from ChatGPT
         response = chatgpt(full_text)
         return response
 
-
-
-
 #########################
 # LISTER FOR USER INPUT #
 #########################
+
+def recognize(recognizer, audio):
+    return recognizer.recognize_google(audio);
 
 def chat_with_user():
     # Initialize the recognizer
@@ -157,7 +151,7 @@ def chat_with_user():
             audio = r.listen(source)  # Increase the timeout as needed
 
             try:
-                speech_text = r.recognize_google(audio)
+                speech_text = recognize(r, audio);
                 print("Recognized:", speech_text)
 
                 if "mika" in speech_text.lower():
@@ -166,7 +160,7 @@ def chat_with_user():
                     try:
                         print("Listening to user...")
                         user_audio = r.listen(source, timeout=5)
-                        user_text = r.recognize_google(user_audio)
+                        user_text = recognize(r, user_audio);
                         print("User said:", user_text)
 
                         # Generate assistant's response
