@@ -65,6 +65,7 @@ def chatgpt(prompt):
 ######################
 
 def run_ani_cli(command):
+    print(command)
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True, text=True)
 
     while True:
@@ -111,47 +112,91 @@ def answers(user_input):
         return f"The day is {current_day}."
     
     # Check if user wants to search the web
-    elif separated_text[0] == "go" and separated_text[1] == "to":
-        query = ' '.join(separated_text[2:])
-        # check if it is a website
-        if "." in query:
-            ttsJustText("Going to " + query)
-            webbrowser.open("https://" + query)
-        else:
+    elif "go" in separated_text and "to" in separated_text:
+        # Find the indices of "go" and "to"
+        go_index = separated_text.index("go")
+        to_index = separated_text.index("to")
+
+        # Ensure "to" comes after "go"
+        if go_index < to_index:
+            # Extract the text after "to"
+            query = ' '.join(separated_text[to_index + 1:])
+
+            # Check if it is a website
+            if "." in query:
+                ttsJustText("Going to " + query)
+                webbrowser.open("https://" + query)
+            else:
+                ttsJustText("Searching for " + query)
+                webbrowser.open("https://www.google.com/search?q=" + query)
+            return "Opening your search query in the browser."
+    elif "search" in separated_text and "for" in separated_text:
+        # Find the indices of "go" and "to"
+        go_index = separated_text.index("search")
+        to_index = separated_text.index("for")
+
+        # Ensure "to" comes after "go"
+        if go_index < to_index:
+            # Extract the text after "to"
+            query = ' '.join(separated_text[to_index + 1:])
+
             ttsJustText("Searching for " + query)
             webbrowser.open("https://www.google.com/search?q=" + query)
-        return "Opening your search query in the browser."
+            return "Opening your search query in the browser."
     
+    # TODO Implement this functionality, but doing it good this time.
     # Check if user wants to watch an anime
-    elif all(word in separated_text for word in ["watch", "anime"]):
-        anime_name = "".join(separated_text[2:])
-        print(f"Watching anime: {anime_name}")
-        run_ani_cli(f"ani-cli {anime_name}")
+    # elif all(word in separated_text for word in ["watch", "anime"]):
+    #     watch_index = separated_text.index("watch")
+    #     watch_anime = separated_text.index("anime")
+        
+    #     # Ensure "anime" comes after "watch"
+    #     if watch_index < watch_anime:
+    #         # Extract the text after "anime"
+    #         query = ' '.join(separated_text[watch_anime+1:])
 
-    else:
-        # Get a response from ChatGPT
-        response = chatgpt(full_text)
-        return response
+    #         anime_name = "".join(separated_text[2:])
+    #         print(f"Watching anime: {query}")
+    #         run_ani_cli(f"ani-cli {query}")
+    # else:
+    #     # Get a response from ChatGPT
+    #     response = chatgpt(full_text)
+    #     return response
 
 #########################
 # LISTER FOR USER INPUT #
 #########################
 
 def recognize(recognizer, audio):
-    # fast, accurate, requires internet, not free
-    return recognizer.recognize_google(audio);
+    # return sr.Recognizer()
+    return recognizer.recognize_whisper(
+        audio,      # audio_data
+        'small.en', # model can be any of tiny, base, small, medium, large, tiny.en, base.en, small.en, medium.en
+        False,      # show_dict
+        None,       # load_options
+        "english",  # language
+        False       # translate
+    );
+
+
 
 def interpret(recognizer, audio):
     print('A voice was heard, recognizing...');
+
     try:
         user_text = recognize(recognizer, audio);
-        print("User said:", user_text);
-            
-        # Generate assistant's response
-        assistant_response = answers(user_text)
 
-        # Convert assistant's response to speech
-        text_to_speech(assistant_response)
+        if "mika" in user_text.lower():  
+            # user_text = user_text.lower().split("mika", 1)[1].strip();
+            print("User said:", user_text);
+
+            # Generate assistant's response
+            assistant_response = answers(user_text)
+
+            # Convert assistant's response to speech
+            text_to_speech(assistant_response)
+        else:
+            return
     except Exception as e: 
         print(e);
 
