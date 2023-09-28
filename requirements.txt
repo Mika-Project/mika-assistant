@@ -5,3 +5,6 @@ speechrecognition
 pyaudio
 datetime
 python-dotenv
+torch
+whisper
+soundfile

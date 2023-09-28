@@ -12,7 +12,7 @@ REM Check if Python is installed
 python --version >nul 2>&1
 if errorlevel 1 (
     echo [WARNING] - Python is not installed. Installing Python...
-    winget install python3
+    start /b winget install python3
     echo [OK] - Python is successfully installed.
 ) else (
     echo [OK] - Python is already installed.
@@ -37,10 +37,10 @@ if exist requirements.txt (
     set /p "arguments=Would you like to use the argument '--break-system-packages'? Note: this can cause major issues. [y/n]"
     if /i "%arguments%"=="y" (
         REM Install Python dependencies
-        pip install --break-system-packages -r requirements.txt || call :handle_error
+        start /b pip install --break-system-packages -r requirements.txt || call :handle_error
     ) else (
         REM Install Python dependencies
-        pip install -r requirements.txt || call :handle_error pip
+        start /b pip install -r requirements.txt || call :handle_error pip
     )
 ) else (
     echo [ERROR] - requirements.txt not found.
@@ -53,7 +53,7 @@ set /p "argument=Do you want to run the script now? [y/n]"
 if /i "%argument%"=="y" (
     python script.py
 ) else (
-    exit /b 0
+    exit
 )
 
 pause

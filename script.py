@@ -8,6 +8,8 @@ import webbrowser
 import subprocess
 from dotenv import load_dotenv
 import os
+import threading
+import time
 
 ##############################
 # Load environment variables #
@@ -39,7 +41,7 @@ def ttsJustText(text, language='en'):
 # GET RESPONSE FROM CHATGPT #
 #############################
 
-openai.api_key = 'sk-' + str(os.getenv('OPENAI_API_KEY'));
+openai.api_key = str(os.getenv('OPENAI_API_KEY'))
 
 def chatgpt(prompt):
     start_sequence = "\nA:"
@@ -63,6 +65,7 @@ def chatgpt(prompt):
 ######################
 
 def run_ani_cli(command):
+    print(command)
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True, text=True)
 
     while True:
@@ -109,34 +112,63 @@ def answers(user_input):
         return f"The day is {current_day}."
     
     # Check if user wants to search the web
-    elif separated_text[0] == "go" and separated_text[1] == "to":
-        query = ' '.join(separated_text[2:])
-        # check if it is a website
-        if "." in query:
-            ttsJustText("Going to " + query)
-            webbrowser.open("https://" + query)
-        else:
+    elif "go" in separated_text and "to" in separated_text:
+        # Find the indices of "go" and "to"
+        go_index = separated_text.index("go")
+        to_index = separated_text.index("to")
+
+        # Ensure "to" comes after "go"
+        if go_index < to_index:
+            # Extract the text after "to"
+            query = ' '.join(separated_text[to_index + 1:])
+
+            # Check if it is a website
+            if "." in query:
+                ttsJustText("Going to " + query)
+                webbrowser.open("https://" + query)
+            else:
+                ttsJustText("Searching for " + query)
+                webbrowser.open("https://www.google.com/search?q=" + query)
+            return "Opening your search query in the browser."
+    elif "search" in separated_text and "for" in separated_text:
+        # Find the indices of "go" and "to"
+        go_index = separated_text.index("search")
+        to_index = separated_text.index("for")
+
+        # Ensure "to" comes after "go"
+        if go_index < to_index:
+            # Extract the text after "to"
+            query = ' '.join(separated_text[to_index + 1:])
+
             ttsJustText("Searching for " + query)
             webbrowser.open("https://www.google.com/search?q=" + query)
-        return "Opening your search query in the browser."
+            return "Opening your search query in the browser."
     
+    # TODO Implement this functionality, but doing it good this time.
     # Check if user wants to watch an anime
-    elif all(word in separated_text for word in ["watch", "anime"]):
-        anime_name = "".join(separated_text[2:])
-        print(f"Watching anime: {anime_name}")
-        run_ani_cli(f"ani-cli {anime_name}")
+    # elif all(word in separated_text for word in ["watch", "anime"]):
+    #     watch_index = separated_text.index("watch")
+    #     watch_anime = separated_text.index("anime")
+        
+    #     # Ensure "anime" comes after "watch"
+    #     if watch_index < watch_anime:
+    #         # Extract the text after "anime"
+    #         query = ' '.join(separated_text[watch_anime+1:])
 
-    else:
-        # Get a response from ChatGPT
-        response = chatgpt(full_text)
-        return response
+    #         anime_name = "".join(separated_text[2:])
+    #         print(f"Watching anime: {query}")
+    #         run_ani_cli(f"ani-cli {query}")
+    # else:
+    #     # Get a response from ChatGPT
+    #     response = chatgpt(full_text)
+    #     return response
 
 #########################
 # LISTER FOR USER INPUT #
 #########################
 
 def recognize(recognizer, audio):
-    # speed is pc dependent, decent, offline, free
+    # return sr.Recognizer()
     return recognizer.recognize_whisper(
         audio,      # audio_data
         'small.en', # model can be any of tiny, base, small, medium, large, tiny.en, base.en, small.en, medium.en
@@ -146,48 +178,48 @@ def recognize(recognizer, audio):
         False       # translate
     );
 
+
+
+def interpret(recognizer, audio):
+    print('A voice was heard, recognizing...');
+
+    try:
+        user_text = recognize(recognizer, audio);
+
+        if "mika" in user_text.lower():  
+            # user_text = user_text.lower().split("mika", 1)[1].strip();
+            print("User said:", user_text);
+
+            # Generate assistant's response
+            assistant_response = answers(user_text)
+
+            # Convert assistant's response to speech
+            text_to_speech(assistant_response)
+        else:
+            return
+    except Exception as e: 
+        print(e);
+
+def get_microphone():
+    # return default microphone
+    return sr.Microphone();
+    
 def chat_with_user():
     # Initialize the recognizer
-    r = sr.Recognizer()
+    
+    r = sr.Recognizer();
+    m = get_microphone();
+    
+    print("Adjusting microphone levels, please be silent");
+    with m as source:
+        r.adjust_for_ambient_noise(source);
 
-    while True:
-        with sr.Microphone() as source:
-            print("[STATUS] - Adjusting for ambient noise level.")
-            r.adjust_for_ambient_noise(source)
-
-            print("[STATUS] - Listening...")
-            audio = r.listen(source)  # Increase the timeout as needed
-
-            try:
-                speech_text = recognize(r, audio);
-                print("Recognized:", speech_text)
-
-                if "mika" in speech_text.lower():
-                    print("Assistant activated.")
-
-                    try:
-                        print("Listening to user...")
-                        user_audio = r.listen(source, timeout=5)
-                        user_text = recognize(r, user_audio);
-                        print("User said:", user_text)
-
-                        # Generate assistant's response
-                        assistant_response = answers(user_text)
-
-                        # Convert assistant's response to speech
-                        text_to_speech(assistant_response)
-
-                    except sr.WaitTimeoutError:
-                        print("No speech detected.")
-
-                    except sr.UnknownValueError:
-                        print("[ERROR] - Unable to recognize user speech.")
-
-            except sr.WaitTimeoutError:
-                print("No speech detected within timeout.")
-
-            except sr.UnknownValueError:
-                print("[ERROR] - Unable to recognize speech.")
-
+    print("Listening...");
+    stop_listening = r.listen_in_background(m, interpret);
+    # stop_listening is a function, call it to stop
+    
+    while True: 
+        time.sleep(1.0);
+    
 # Start the conversation loop
 chat_with_user()

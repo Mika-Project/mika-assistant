@@ -53,7 +53,7 @@ if [ -f /etc/os-release ]; then
             log "$CAT - yay is not installed. Installing..."
         
             # Install yay using yay's official installation command
-            sudo pacman -S --noconfirm yay || handle_error
+            sudo pacman -S --needed git base-devel && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si || handle_error
             log "$COK - successfully installed yay. Continuing with the script."
         fi
         log "$CNT - yay is already installed"
