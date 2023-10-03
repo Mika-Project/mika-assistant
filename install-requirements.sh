@@ -53,7 +53,7 @@ if [ -f /etc/os-release ]; then
             log "$CAT - yay is not installed. Installing..."
         
             # Install yay using yay's official installation command
-            sudo pacman -S --needed git base-devel && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si || handle_error
+            sudo pacman -S --needed git base-devel ffmpeg && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si || handle_error
             log "$COK - successfully installed yay. Continuing with the script."
         fi
         log "$CNT - yay is already installed"
@@ -76,16 +76,7 @@ if [ -f /etc/os-release ]; then
         if command -v pip &> /dev/null; then
             log "$CWR - Installing Python packages from requirements.txt..."   
 
-            # Ask the user if they want to use the '--break-system-packages' argument
-            read -p "Would you like to use the argument '--break-system-packages'? Note: this can cause major issues. [y/n]" arguments
-
-            if [[ $arguments =~ ^[Yy]$ ]]; then
-                # Install Python dependencies
-                pip install --break-system-packages -r requirements.txt || handle_error
-            else 
-                # Install Python dependencies
-                pip install -r requirements.txt || handle_error "pip"
-            fi
+            pip install --break-system-packages -r requirements.txt || handle_error
         else
             log "$CER - pip installation failed. Please install Pip manually and run 'pip install -r requirements.txt'."
         fi

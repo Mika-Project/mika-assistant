@@ -8,7 +8,7 @@ import webbrowser
 import subprocess
 from dotenv import load_dotenv
 import os
-import threading
+# import threading
 import time
 
 ##############################
@@ -16,6 +16,38 @@ import time
 ##############################
 
 load_dotenv()
+
+
+######################################
+# Install requirements automatically #
+######################################
+
+def install_dependencies():
+    if os.path.exists("installed-dependencies.txt"):
+        with open("installed-dependencies.txt", "r") as file:
+            content = file.read().strip()
+            if content == "true":
+                print("Dependencies are already installed.")
+                return
+
+    if os.name == 'posix':
+        dependencies_script = 'install-requirements.sh'
+        try:
+            subprocess.run(['sh', dependencies_script], check=True)
+            with open("installed-dependencies.txt", "w") as file:
+                file.write("true")
+        except subprocess.CalledProcessError as e:
+            print(f"Error executing the script: {e}")
+    elif os.name == 'nt':
+        dependencies_script = '.\\install-requirements.bat'
+        try:
+            subprocess.run([dependencies_script], check=True)
+            with open("installed-dependencies.txt", "w") as file:
+                file.write("true")
+        except subprocess.CalledProcessError as e:
+            print(f"Error executing the script: {e}")
+    else:
+        print("Your OS is not found")
 
 ###################################
 # CONVERT CHATGPT RESPONSE TO TTS #
@@ -85,8 +117,6 @@ def run_ani_cli(command):
 def answers(user_input):
     full_text = user_input
     separated_text = user_input.split(" ")
-    # print(separated_text[0])
-    # print(separated_text[1])
 
     # Check if user wants to know the time
     if "time" in separated_text and "current" in separated_text:
@@ -143,6 +173,10 @@ def answers(user_input):
             ttsJustText("Searching for " + query)
             webbrowser.open("https://www.google.com/search?q=" + query)
             return "Opening your search query in the browser."
+    else:
+        # Get a response from ChatGPT
+        response = chatgpt(full_text)
+        return response
     
     # TODO Implement this functionality, but doing it good this time.
     # Check if user wants to watch an anime
@@ -158,10 +192,6 @@ def answers(user_input):
     #         anime_name = "".join(separated_text[2:])
     #         print(f"Watching anime: {query}")
     #         run_ani_cli(f"ani-cli {query}")
-    # else:
-    #     # Get a response from ChatGPT
-    #     response = chatgpt(full_text)
-    #     return response
 
 #########################
 # LISTER FOR USER INPUT #
@@ -171,7 +201,7 @@ def recognize(recognizer, audio):
     # return sr.Recognizer()
     return recognizer.recognize_whisper(
         audio,      # audio_data
-        'small.en', # model can be any of tiny, base, small, medium, large, tiny.en, base.en, small.en, medium.en
+        'small', # model can be any of tiny, base, small, medium, large, tiny.en, base.en, small.en, medium.en
         False,      # show_dict
         None,       # load_options
         "english",  # language
@@ -220,6 +250,8 @@ def chat_with_user():
     
     while True: 
         time.sleep(1.0);
-    
+
+# Install dependencies
+install_dependencies()    
 # Start the conversation loop
 chat_with_user()
