@@ -1,4 +1,5 @@
 *.log
 *.mp3
 .env
+test.py
 installed-dependencies.txt

@@ -72,6 +72,12 @@ if [ -f /etc/os-release ]; then
             log "$COK - pip is successfully installed."
         fi
 
+        if ! command -v ani-cli &> /dev/null; then
+            log "$CWR - ani-cli is not installed. Installing Pip..."
+            yay -S --noconfirm ani-cli || handle_error
+            log "$COK - ani-cli is successfully installed."
+        fi
+
         # Install packages from requirements.txt using Pip
         if command -v pip &> /dev/null; then
             log "$CWR - Installing Python packages from requirements.txt..."   

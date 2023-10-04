@@ -96,18 +96,20 @@ def chatgpt(prompt):
 # ANIME PLAY COMMAND #
 ######################
 
-def run_ani_cli(command):
-    print(command)
-    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True, text=True)
+def run_ani_cli(anime):
+    # get if the user is using windows or linux
+    # if windows, use cmd
+    # if linux, use terminal
+    platform = os.sys.platform
+    if platform == 'win32':
+        command = ['ani-cli', anime]
+        subprocess.Popen(['cmd', '/k'] + command)
+    else:
+        command = ['ani-cli', anime]
+        terminal_emulator = os.popen("echo $TERM").read().strip()
+        subprocess.Popen([terminal_emulator, '-e'] + command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-    while True:
-        output = process.stdout.readline()
-        if output == '' and process.poll() is not None:
-            break
-        if output:
-            print(output.strip())
-    
-    return process.poll()
+    return 
 
 
 ########################################
@@ -173,25 +175,23 @@ def answers(user_input):
             ttsJustText("Searching for " + query)
             webbrowser.open("https://www.google.com/search?q=" + query)
             return "Opening your search query in the browser."
+    # Check if user wants to watch an anime
+    elif all(word in separated_text for word in ["watch", "anime"]):
+        watch_index = separated_text.index("watch")
+        watch_anime = separated_text.index("anime")
+        
+        # Ensure "anime" comes after "watch"
+        if watch_index < watch_anime:
+            # Extract the text after "anime"
+            query = ' '.join(separated_text[watch_anime+1:])
+
+            anime_name = "".join(separated_text[2:])
+            print(f"Searching for anime: {query}")
+            run_ani_cli(f"{query}")
     else:
         # Get a response from ChatGPT
         response = chatgpt(full_text)
         return response
-    
-    # TODO Implement this functionality, but doing it good this time.
-    # Check if user wants to watch an anime
-    # elif all(word in separated_text for word in ["watch", "anime"]):
-    #     watch_index = separated_text.index("watch")
-    #     watch_anime = separated_text.index("anime")
-        
-    #     # Ensure "anime" comes after "watch"
-    #     if watch_index < watch_anime:
-    #         # Extract the text after "anime"
-    #         query = ' '.join(separated_text[watch_anime+1:])
-
-    #         anime_name = "".join(separated_text[2:])
-    #         print(f"Watching anime: {query}")
-    #         run_ani_cli(f"ani-cli {query}")
 
 #########################
 # LISTER FOR USER INPUT #
@@ -251,7 +251,12 @@ def chat_with_user():
     while True: 
         time.sleep(1.0);
 
-# Install dependencies
-install_dependencies()    
-# Start the conversation loop
-chat_with_user()
+# DEBUG.
+# answers("Hey mika, I want to watch anime a certain scientific railgun")
+# while True:
+#     time.sleep(1.0)
+
+
+# Start commands
+install_dependencies() # Install dependencies
+chat_with_user() # Start the conversation loop
