@@ -1,16 +1,17 @@
-/* Add your CSS styles here */
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+* {
+    font-family: 'Inter', sans-serif;
+}
 
 h1 {
     color: #333;
     text-align: center;
+    font-weight: 600;
 }
 
 .topContainer {
     margin-top: 50px;
 }
-
-
-/* Add custom CSS for positioning and styling */
 
 body {
     display: flex;
@@ -20,7 +21,8 @@ body {
 }
 
 #headerText {
-    color: red
+    padding-top: 10px;
+    /* color: red; */
 }
 
 .bottomContainer {
