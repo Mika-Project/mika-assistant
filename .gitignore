@@ -3,3 +3,4 @@
 .env
 test.py
 installed-dependencies.txt
+modules/__pycache__/

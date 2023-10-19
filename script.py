@@ -1,14 +1,9 @@
-from gtts import gTTS
-from pydub import AudioSegment
-from pydub.playback import play
 import speech_recognition as sr
-import openai
-import datetime
-import webbrowser
 import subprocess
 from dotenv import load_dotenv
 import os
-# import threading
+from modules.answers_modules import answers
+from modules.chatgpt_module import text_to_speech
 import time
 
 ##############################
@@ -49,150 +44,6 @@ def install_dependencies():
     else:
         print("Your OS is not found")
 
-###################################
-# CONVERT CHATGPT RESPONSE TO TTS #
-###################################
-
-def text_to_speech(text, language='en'):
-    tts = gTTS(text=text, lang=language, tld='com.au', slow=False, lang_check=False)
-    tts.save('output.mp3')
-    audio = AudioSegment.from_file('output.mp3', format='mp3')
-    play(audio)
-    # Remove the temporary audio file
-    os.remove('output.mp3')
-
-def ttsJustText(text, language='en'):
-    tts = gTTS(text=text, lang=language, tld='com.au', slow=False, lang_check=False)
-    tts.save('output2.mp3')
-    audio = AudioSegment.from_file('output2.mp3', format='mp3')
-    play(audio)
-    # Remove the temporary audio file
-    os.remove('output2.mp3')
-
-#############################
-# GET RESPONSE FROM CHATGPT #
-#############################
-
-openai.api_key = str(os.getenv('OPENAI_API_KEY'))
-
-def chatgpt(prompt):
-    start_sequence = "\nA:"
-    restart_sequence = "\n\nQ: "
-
-    response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=f"Q: {prompt}",
-        temperature=0.7,
-        max_tokens=50,
-        n=1,
-        stop=None
-    )
-
-    # response = response.choices[0].text
-    response = response.choices[0].text.strip()
-    return response  # Return the generated response
-
-######################
-# ANIME PLAY COMMAND #
-######################
-
-def run_ani_cli(anime):
-    # get if the user is using windows or linux
-    # if windows, use cmd
-    # if linux, use terminal
-    platform = os.sys.platform
-    if platform == 'win32':
-        command = ['ani-cli', anime]
-        subprocess.Popen(['cmd', '/k'] + command)
-    else:
-        command = ['ani-cli', anime]
-        terminal_emulator = os.popen("echo $TERM").read().strip()
-        subprocess.Popen([terminal_emulator, '-e'] + command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-
-    return 
-
-
-########################################
-# GET RESPONSES AND DO DESIRED ACTIONS #
-########################################
-
-def answers(user_input):
-    full_text = user_input
-    separated_text = user_input.split(" ")
-
-    # Check if user wants to know the time
-    if "time" in separated_text and "current" in separated_text:
-        # Get the current time
-        print("Getting the current time...")
-        current_time = datetime.datetime.now().strftime("%H:%M")
-        return f"The time is {current_time}."
-    
-    # Check if user wants to exit
-    elif separated_text[0] == "exit" or separated_text[0] == "quit":
-        exit()
-
-    # Check if user wants to know the date
-    elif "date" in separated_text and "current" in separated_text:
-        # Get the current date
-        current_date = datetime.datetime.now().strftime("%d/%m/%Y")
-        return f"The date is {current_date}."
-    
-    # Check if user wants to know the day
-    elif "day" in separated_text and "current" in separated_text:
-        # Get the current day
-        current_day = datetime.datetime.now().strftime("%A")
-        return f"The day is {current_day}."
-    
-    # Check if user wants to search the web
-    elif "go" in separated_text and "to" in separated_text:
-        # Find the indices of "go" and "to"
-        go_index = separated_text.index("go")
-        to_index = separated_text.index("to")
-
-        # Ensure "to" comes after "go"
-        if go_index < to_index:
-            # Extract the text after "to"
-            query = ' '.join(separated_text[to_index + 1:])
-
-            # Check if it is a website
-            if "." in query:
-                ttsJustText("Going to " + query)
-                webbrowser.open("https://" + query)
-            else:
-                ttsJustText("Searching for " + query)
-                webbrowser.open("https://www.google.com/search?q=" + query)
-            return "Opening your search query in the browser."
-    elif "search" in separated_text and "for" in separated_text:
-        # Find the indices of "go" and "to"
-        go_index = separated_text.index("search")
-        to_index = separated_text.index("for")
-
-        # Ensure "to" comes after "go"
-        if go_index < to_index:
-            # Extract the text after "to"
-            query = ' '.join(separated_text[to_index + 1:])
-
-            ttsJustText("Searching for " + query)
-            webbrowser.open("https://www.google.com/search?q=" + query)
-            return "Opening your search query in the browser."
-    # Check if user wants to watch an anime
-    elif all(word in separated_text for word in ["watch", "anime"]):
-        watch_index = separated_text.index("watch")
-        watch_anime = separated_text.index("anime")
-        
-        # Ensure "anime" comes after "watch"
-        if watch_index < watch_anime:
-            # Extract the text after "anime"
-            query = ' '.join(separated_text[watch_anime+1:])
-
-            anime_name = "".join(separated_text[2:])
-            print(f"Searching for anime: {query}")
-            run_ani_cli(f"{query}")
-    else:
-        # Get a response from ChatGPT
-        response = chatgpt(full_text)
-        return response
-
 #########################
 # LISTER FOR USER INPUT #
 #########################
@@ -222,7 +73,7 @@ def interpret(recognizer, audio):
 
             # Generate assistant's response
             assistant_response = answers(user_text)
-
+            print("Mika said:", assistant_response)
             # Convert assistant's response to speech
             text_to_speech(assistant_response)
         else:
@@ -252,7 +103,8 @@ def chat_with_user():
         time.sleep(1.0);
 
 # DEBUG.
-# answers("Hey mika, I want to watch anime a certain scientific railgun")
+# answer = answers("Hey mika, can you tell me the time")
+# text_to_speech(answer)
 # while True:
 #     time.sleep(1.0)
 
