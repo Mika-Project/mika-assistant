@@ -1,0 +1,48 @@
+/* Add your CSS styles here */
+
+h1 {
+    color: #333;
+    text-align: center;
+}
+
+.topContainer {
+    margin-top: 50px;
+}
+
+
+/* Add custom CSS for positioning and styling */
+
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+}
+
+#headerText {
+    color: red
+}
+
+.bottomContainer {
+    margin-bottom: 10px;
+}
+
+input[type="text"] {
+    width: 87%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+input[type="submit"] {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    color: #fff;
+    font-weight: bold;
+}
+
+.voiceButton {
+    width: 100%;
+}

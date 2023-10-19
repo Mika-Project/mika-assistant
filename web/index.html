@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Your GUI</title>
+    <link rel="stylesheet" href="bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script type="text/javascript" src="/eel.js"></script>
+</head>
+
+<body>
+    <div class="container topContainer">
+        <div class="col">
+            <div class="row">
+                <img src="logo.png" alt="Logo" width="100" height="100">
+            </div>
+        </div>
+        <div class="col">
+            <div class="row">
+                <h1 id="headerText">Mika Assistant</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="col">
+            <div class="row">
+                <h2>Output</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="container bottomContainer fixed-bottom">
+        <div class="col">
+            <div class="row">
+                <div class="col">
+                    <div class="row">
+                        <h2>What can I do for you?</h2>
+                    </div>
+                    <div class="row">
+                        <form method="post" id="userInputForm">
+                            <input type="text" name="command" placeholder="Ask Mika something...">
+                            <input type="submit" value="🔍">
+                        </form>
+                        <div class="containerVoice">
+                            <button class="btn btn-secondary voiceButton" onclick="startVoiceAssistant()">Start voice assistant</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
