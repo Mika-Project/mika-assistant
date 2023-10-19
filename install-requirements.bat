@@ -8,16 +8,64 @@ echo "###           MADE WITH LOVE BY 'Luciousdev'           ###"
 echo "###                   mika-linux.com                   ###"
 echo "##########################################################"
 
+REM Check if Git is installed
+git --version >nul 2>&1
+if errorlevel 1 (
+    echo [WARNING] - Git is not installed. Installing Git...
+    call winget install --id Git.Git -e --source winget
+    echo [OK] - Git is successfully installed.
+    
+    REM Refresh environment variables
+    call refreshenv
+    
+    
+) else (
+    echo [OK] - Git is already installed.
+    
+)
+
+REM Check if Scoop is installed
+scoop help >nul 2>&1
+if errorlevel 1  (
+    
+    echo [WARNING] - Scoop is not installed. Installing Scoop...
+    powershell -Command "Set-ExecutionPolicy RemoteSigned -scope CurrentUser"
+    powershell -Command "iwr -useb get.scoop.sh | iex"
+    echo [OK] - Scoop is successfully installed.
+) else (
+    
+    echo [OK] - Scoop is already installed.
+)
+
+REM Install packages using Scoop
+echo "installing bucket.."
+call scoop bucket add extras
+
+REM Install ani-cli from source
+echo "installing ani-cli..."
+call scoop install ani-cli
+
+echo "installing aditional ani-cli packages.."
+REM Install additional packages
+ 
+call scoop install aria2
+call scoop install ffmpeg
+call scoop install fzf
+call scoop install git
+call scoop install extras
+call scoop install mpv
+call scoop install wget
+
+
 REM Check if Python is installed
 python --version >nul 2>&1
 if errorlevel 1 (
     echo [WARNING] - Python is not installed. Installing Python...
-    start /b winget install python3
+    call winget install python3
     echo [OK] - Python is successfully installed.
 ) else (
     echo [OK] - Python is already installed.
 )
-
 
 REM Check if Pip is installed
 pip --version >nul 2>&1
@@ -28,7 +76,6 @@ if errorlevel 1 (
     echo [OK] - pip is already installed.
 )
 
-
 REM Install packages from requirements.txt using Pip
 if exist requirements.txt (
     echo [PROGRESS] - Installing Python packages from requirements.txt...
@@ -37,10 +84,10 @@ if exist requirements.txt (
     set /p "arguments=Would you like to use the argument '--break-system-packages'? Note: this can cause major issues. [y/n]"
     if /i "%arguments%"=="y" (
         REM Install Python dependencies
-        start /b pip install --break-system-packages -r requirements.txt || call :handle_error
+        call pip install --break-system-packages -r requirements.txt || call :handle_error
     ) else (
         REM Install Python dependencies
-        start /b pip install -r requirements.txt || call :handle_error pip
+        call pip install -r requirements.txt || call :handle_error pip
     )
 ) else (
     echo [ERROR] - requirements.txt not found.
@@ -57,3 +104,4 @@ if /i "%argument%"=="y" (
 )
 
 pause
+
