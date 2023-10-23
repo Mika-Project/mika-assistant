@@ -30,10 +30,6 @@ def text_chat_with_user(user_input):
         print("Getting the current time...")
         current_time = datetime.datetime.now().strftime("%H:%M")
         return f"The time is {current_time}."
-    
-    # Check if user wants to exit
-    elif separated_text[0] == "exit" or separated_text[0] == "quit":
-        exit()
 
     # Check if user wants to know the date
     elif ("date" in separated_text or "date?" in separated_text) and "current" in separated_text:
@@ -88,8 +84,8 @@ def text_chat_with_user(user_input):
             query = ' '.join(separated_text[watch_anime+1:])
 
             anime_name = "".join(separated_text[2:])
-            print(f"Searching for anime: {query}")
             run_ani_cli(f"{query}")
+            return f"Searching for anime: {query}"
     else:
         print("Getting a response from ChatGPT...")
         # Get a response from ChatGPT
