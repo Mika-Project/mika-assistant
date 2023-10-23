@@ -8,6 +8,19 @@ echo "###           MADE WITH LOVE BY 'Luciousdev'           ###"
 echo "###                   mika-linux.com                   ###"
 echo "##########################################################"
 
+REM Check if Git is installed
+git --version >nul 2>&1
+if errorlevel 1 (
+    echo [WARNING] - Git is not installed. Installing Git...
+    call winget install Git.Git
+    echo [OK] - Git is successfully installed.
+
+    REM Refresh environment variables
+    call refreshenv
+) else (
+    echo [OK] - Git is already installed.
+)
+
 REM Check if Python is installed
 python --version >nul 2>&1
 if errorlevel 1 (
