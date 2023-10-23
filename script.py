@@ -21,10 +21,8 @@ def startVoice():
 @eel.expose
 def startText(userInput):
     justUserInputString = userInput['FormData']['command']
-    text_chat_with_user(justUserInputString)
+    userInputResult = text_chat_with_user(justUserInputString)
+    print(userInputResult)
+    return userInputResult
 
 eel.start("index.html", size=(400, 800))
-
-# DEBUG.
-# answer = answers("Hey mika, can you tell me the current time")
-# text_to_speech(answer)

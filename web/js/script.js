@@ -13,8 +13,13 @@ function startVoiceAssistant() {
 }
 
 
-function startText(resp) {
-    eel.startText(resp);
+async function startText(resp) {
+    let result = await eel.startText(resp)();
+    let conversation = document.getElementById("conversation");
+    let newDiv = document.createElement("div");
+    newDiv.setAttribute("class", "aiText");
+    newDiv.innerHTML = result;
+    conversation.appendChild(newDiv);
 }
 
 function submitForm(e) {
@@ -39,6 +44,12 @@ function submitForm(e) {
         .then((resp) => {
             console.log("resp from server ", resp);
             myform.reset();
+            let formText = formData.get("userInputForm");
+            let conversation = document.getElementById("conversation");
+            let newDiv = document.createElement("div");
+            newDiv.setAttribute("class", "userText");
+            newDiv.innerHTML = resp['FormData']['command'];
+            conversation.appendChild(newDiv);
             startText(resp);
         })
         .catch((error) => {
