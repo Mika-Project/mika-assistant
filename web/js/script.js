@@ -6,10 +6,18 @@ function checkLength() {
     }
 }
 
+let assistantListening = false;
 
 function startVoiceAssistant() {
-    document.getElementById("headerText").style.color = "green";
-    eel.startVoice();
+    eel.toggleVoice();
+
+    if (!assistantListening) {
+        assistantListening = true;
+        document.getElementById("headerText").style.color = "green";
+    } else {
+        assistantListening = false;
+        document.getElementById("headerText").style.color = "red";
+    }
 }
 
 
@@ -42,7 +50,7 @@ function submitForm(e) {
             return response.json();
         })
         .then((resp) => {
-            console.log("resp from server ", resp);
+            // console.log("resp from server ", resp);
             myform.reset();
             let formText = formData.get("userInputForm");
             let conversation = document.getElementById("conversation");
@@ -54,6 +62,7 @@ function submitForm(e) {
         })
         .catch((error) => {
             // Handle error
+            startText("error: ", error);
             console.log("error ", error);
         });
 }

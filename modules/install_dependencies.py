@@ -1,11 +1,15 @@
 import os
 import subprocess
+import platform
 
 ######################################
 # Install requirements automatically #
 ######################################
 
 def install_dependencies():
+    # Get the user OS
+    user_os = platform.system()
+
     if os.path.exists("installed-dependencies.txt"):
         with open("installed-dependencies.txt", "r") as file:
             content = file.read().strip()
@@ -14,7 +18,8 @@ def install_dependencies():
                 print("Dependencies are already installed.")
                 return
 
-    if os.name == 'posix':
+    # Install requirements based on the OS that the user is using
+    if user_os == 'Linux' or user_os == 'Darwin':
         dependencies_script = 'install-requirements.sh'
         try:
             subprocess.run(['sh', dependencies_script], check=True)
@@ -22,7 +27,7 @@ def install_dependencies():
                 file.write("true")
         except subprocess.CalledProcessError as e:
             print(f"Error executing the script: {e}")
-    elif os.name == 'nt':
+    elif user_os == 'Windows':
         dependencies_script = '.\\install-requirements.bat'
         try:
             subprocess.run([dependencies_script], check=True)
