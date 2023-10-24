@@ -32,19 +32,32 @@ def ttsJustText(text, language='en'):
 
 openai.api_key = str(os.getenv('OPENAI_API_KEY'))
 
-def chatgpt(prompt):
-    start_sequence = "\nA:"
-    restart_sequence = "\n\nQ: "
+conversation_history = "" # Initialize an empty conversation history
 
+def chatgpt(user_message):    
+    global conversation_history
+    print(conversation_history)
+    print("-----------------------------seperator-----------------------------")
+    convHistoryLength = len(conversation_history)
+    if convHistoryLength >= 1000:
+        conversation_history = ""
+    print(conversation_history)
+
+    # Append the user message to the conversation history
+    conversation_history += f"\nUser: {user_message}"
+    
+    # Generate a response using OpenAI's API
     response = openai.Completion.create(
         model="text-davinci-003",
-        prompt=f"Q: {prompt}",
+        prompt=conversation_history + "\nAssistant:",
         temperature=0.7,
-        max_tokens=50,
+        max_tokens=500,
         n=1,
-        stop=None
+        stop=["\n"]
     )
 
-    # response = response.choices[0].text
-    response = response.choices[0].text.strip()
-    return response  # Return the generated response
+    assistant_message = response.choices[0].text.strip()
+
+    conversation_history += f"\nAssistant: {assistant_message}"
+
+    return assistant_message # Return the response
