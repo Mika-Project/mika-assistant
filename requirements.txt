@@ -9,4 +9,4 @@ torch
 whisper
 soundfile
 eel
-pyinstaller
+screeninfo

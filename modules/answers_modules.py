@@ -25,7 +25,7 @@ def answers(user_input):
     print(separated_text)
 
     # Check if user wants to know the time
-    if "time" in separated_text and "current" in separated_text:
+    if ("time" in separated_text or "time?" in separated_text) and "current" in separated_text:
         # Get the current time
         print("Getting the current time...")
         current_time = datetime.datetime.now().strftime("%H:%M")

@@ -53,8 +53,14 @@ input[type="submit"] {
     display: flex;
     flex-direction: column;
     padding: 10px;
-    max-height: 480px;
+    height: 70vh;
     overflow-y: auto;
+}
+
+@media screen and (max-height: 800px) {
+    .container .col .row .conversationUser {
+        height: 50vh;
+    }
 }
 
 .container .col .row .conversationUser .userText {

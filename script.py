@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from modules.install_dependencies import install_dependencies
 from modules.chat_with_user import chat_with_user
 from modules.text_chat_with_user import text_chat_with_user
+from screeninfo import get_monitors
 
 ##############################
 # Load environment variables #
@@ -35,7 +36,10 @@ def startText(userInput):
     return userInputResult
 
 def start_eel():
-    eel.start("index.html", size=(400, 800))
+    # All sizes are in pixels
+    monitor = get_monitors()[0]
+    taskbar_height = 40
+    eel.start("index.html", size=(400, 720-taskbar_height), position=(monitor.width, taskbar_height))
 
 # Create threads for voice and eel
 thread1 = threading.Thread(target=startVoice)
