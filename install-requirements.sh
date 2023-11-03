@@ -89,7 +89,19 @@ if [ -f /etc/os-release ]; then
     elif [[ "$ID" == "debian" || "$ID_LIKE" == *"debian"* ]]; then
         log "$CNT - Detected Debian-based Linux distribution"
         sudo apt-get update
-        sudo apt-get install -y python3-pip python3
+        sudo apt-get install -y python3-pip python3 portaudio19-dev mpv || handle_error
+        log "$COK - Installation of python, pip and or the needed packages were successfull."
+
+        # Install packages from requirements.txt using Pip
+        if command -v pip &> /dev/null; then
+            log "$CWR - Installing Python packages from requirements.txt..."   
+
+            pip install --break-system-packages -r requirements.txt || handle_error
+        else
+            log "$CER - pip installation failed. Please install Pip manually and run 'pip install -r requirements.txt'."
+        fi
+
+        log "$CWR - Ani-cli NEEDS TO BE INSTALLED MANUALLY. Please install it manually using the guide on their github. We won't be installing it automatically since it requires adding the unstable repository to your system."
     fi 
 fi
 
