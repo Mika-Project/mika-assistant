@@ -11,7 +11,7 @@ def recognize(recognizer, audio):
     # return sr.Recognizer()
     return recognizer.recognize_whisper(
         audio,      # audio_data
-        'small', # model can be any of tiny, base, small, medium, large, tiny.en, base.en, small.en, medium.en
+        'small',    # model can be any of tiny, base, small, medium, large, tiny.en, base.en, small.en, medium.en
         False,      # show_dict
         None,       # load_options
         "english",  # language

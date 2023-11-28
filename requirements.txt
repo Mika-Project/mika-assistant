@@ -12,3 +12,4 @@ eel
 screeninfo
 python-dotenv
 pyaudio
+numpy

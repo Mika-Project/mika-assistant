@@ -11,10 +11,12 @@ from screeninfo import get_monitors
 ##############################
 
 load_dotenv()
+install_dependencies() # Install dependencies
 
 eel.init("web")
 
 voice_active = False
+
 
 @eel.expose
 def toggleVoice():
@@ -25,7 +27,6 @@ def toggleVoice():
 def startVoice():
     while True:
         if voice_active:
-            install_dependencies() # Install dependencies
             chat_with_user() # Start the conversation loop
 
 @eel.expose
