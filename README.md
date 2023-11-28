@@ -25,6 +25,15 @@ sh install-requirements.sh
 NOTE: This script works on Arch and Debian based distros! (For other distros you can for the most part follow the windows guide.)
 
 Step 3.
+
+Install whisper with the following command. If you just install it through pip the script will give an error when using the voice assistant.
+
+```
+pip install git+https://github.com/openai/whisper.git
+
+```
+
+Step 4.
 Run the Python script.
 
 ```bash
@@ -55,7 +64,18 @@ Download the required pip packages.
 pip install -r requirements.txt
 ```
 
+
+
 Step 4.
+
+Install whisper with the following command. If you just install it through pip the script will give an error when using the voice assistant.
+
+```
+pip install git+https://github.com/openai/whisper.git
+
+```
+
+Step 5.
 Run the Python script.
 
 ```bash
@@ -63,7 +83,6 @@ python3 script.py
 ```
 
 The script should run fine without any errors.
-
 
 ## Info
 

@@ -83,6 +83,7 @@ if [ -f /etc/os-release ]; then
             log "$CWR - Installing Python packages from requirements.txt..."   
 
             pip install --break-system-packages -r requirements.txt || handle_error
+            pip install git+https://github.com/openai/whisper.git --break-system-packages || handle_error
         else
             log "$CER - pip installation failed. Please install Pip manually and run 'pip install -r requirements.txt'."
         fi
