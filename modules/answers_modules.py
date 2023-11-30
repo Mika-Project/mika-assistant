@@ -19,6 +19,10 @@ openai.api_key = str(os.getenv('OPENAI_API_KEY'))
 ########################################
 
 def answers(user_input):
+    # Check if the user_input is empty or just has spaces
+    if user_input == "" or user_input.isspace():
+        return "Please say something."
+
     print(user_input)
     full_text = user_input
     separated_text = user_input.split(" ")
