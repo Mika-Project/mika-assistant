@@ -17,6 +17,9 @@ def run_ani_cli(anime):
         else:
             command = ['ani-cli', anime]
             terminal_emulator = os.popen("echo $TERM").read().strip()
+            print(terminal_emulator)
+            if terminal_emulator == 'xterm-256color':
+                terminal_emulator = 'konsole'
             subprocess.Popen([terminal_emulator, '-e'] + command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except print(0):
         print("Error executing the script: {e}")
