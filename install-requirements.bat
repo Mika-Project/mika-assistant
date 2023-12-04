@@ -8,6 +8,19 @@ echo "###           MADE WITH LOVE BY 'Luciousdev'           ###"
 echo "###                   mika-linux.com                   ###"
 echo "##########################################################"
 
+REM Check if Git is installed
+git --version >nul 2>&1
+if errorlevel 1 (
+    echo [WARNING] - Git is not installed. Installing Git...
+    call winget install Git.Git
+    echo [OK] - Git is successfully installed.
+
+    REM Refresh environment variables
+    call refreshenv
+) else (
+    echo [OK] - Git is already installed.
+)
+
 REM Check if Python is installed
 python --version >nul 2>&1
 if errorlevel 1 (
@@ -27,6 +40,21 @@ if errorlevel 1 (
 ) else (
     echo [OK] - pip is already installed.
 )
+
+@REM Handling the scoop install
+powershell -Command "Set-ExecutionPolicy RemoteSigned -scope CurrentUser"
+powershell -Command "iwr -useb get.scoop.sh | iex"
+echo [OK] - Scoop is successfully installed, or already present on users machine.
+
+REM Install packages using Scoop
+echo "installing bucket.."
+call scoop bucket add extras
+
+call refreshenv
+
+echo "installing ani-cli and other packages."
+REM Install additional packages
+call scoop install aria2 ffmpeg fzf mpv wget ani-cli
 
 
 REM Install packages from requirements.txt using Pip
